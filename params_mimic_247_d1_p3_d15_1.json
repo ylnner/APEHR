@@ -1,0 +1,12 @@
+{
+  "inputFileRadical": "CCS/_1/_270",
+  "outFile": "outFinalMimic247_d1_p3_d15_1",
+  "maxConsecutiveNonImprovements": 10,
+  "batchSize": 32,
+  "nEpochs": 50,
+  "dimensionEmbedding": 480,
+  "dff": 60,
+  "numberDecoderLayers": 1,
+  "numberProjections": 3,
+  "headDimension": 15
+}

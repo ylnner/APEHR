@@ -1,0 +1,12 @@
+{
+  "inputFileRadical": "INCOR/_1/INCOR_3133",
+  "outFile": "outFinalINCOR_d1_p5_d15_1",
+  "maxConsecutiveNonImprovements": 10,
+  "batchSize": 32,
+  "nEpochs": 50,
+  "dimensionEmbedding": 1566,
+  "dff": 60,
+  "numberDecoderLayers": 1,
+  "numberProjections": 5,
+  "headDimension": 15
+}
