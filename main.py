@@ -127,7 +127,7 @@ def load_data():
 	return main_trainSet, main_testSet, numberOfInputCodes
 
 def train_step(temp_mm, cce, optimizer, train_loss, inp, target, target_mask):
-	# es necesario definir mask con el input actual
+	
 	with tf.GradientTape() as tape:
 		tape.watch(inp)
 		predictions = temp_mm(inp, True, target_mask)    		
@@ -138,7 +138,7 @@ def train_step(temp_mm, cce, optimizer, train_loss, inp, target, target_mask):
 	optimizer.apply_gradients(zip(gradients, temp_mm.trainable_variables))
 	            
 	train_loss(loss)    
-	#train_accuracy(target, predictions)
+	
 	return predictions
 
 def build_model():
@@ -281,7 +281,6 @@ def performEvaluation(model, eval_Set, numberOfInputCodes):
   n_batches_val = int(np.ceil(float(len(eval_Set)) / float(batchSize)))
   #print('n_batches_val: ', n_batches_val)
   crossEntropySum = 0.0
-  #anotherCorssEntropySum = [] # Estoy guardando en un numpy para comprobar la forma en la que calcula el cross entropy
   dataCount = 0.0
 
   # parametros de metricas
@@ -295,8 +294,6 @@ def performEvaluation(model, eval_Set, numberOfInputCodes):
 
   eval_loss.reset_states()  
 
-  #idx_b = 0
-  #for index in xrange(n_batches):
   for index in range(n_batches_val):
     batchX = eval_Set[index * batchSize:(index + 1) * batchSize]
     #batchY = eval_Set[index * batchSize:(index + 1) * batchSize]
@@ -306,9 +303,8 @@ def performEvaluation(model, eval_Set, numberOfInputCodes):
     y_val    = tf.convert_to_tensor(y_val, dtype=tf.float32)
     mask_val = tf.convert_to_tensor(mask_val, dtype=tf.float32)
 
-    #print('VALy: ', y_val.shape)    
     predicted_y_val = model(xf_val, False, mask_val)
-    #print('VALpredicted_y: ', predicted_y_val.shape)
+    
     loss        = cce_eval(y_val, predicted_y_val)
 
     eval_loss(loss)    
@@ -333,9 +329,9 @@ def performEvaluationToPrint(model, eval_Set, numberOfInputCodes):
 	# parametros de evaluacion
 	batchSize = ARGS.batchSize#params['batchSize']  
 	n_batches_val = int(np.ceil(float(len(eval_Set)) / float(batchSize)))
-	####print('n_batches_val: ', n_batches_val)
+	
 	crossEntropySum        = 0.0
-	#anotherCorssEntropySum = [] # Estoy guardando en un numpy para comprobar la forma en la que calcula el cross entropy
+	
 	dataCount              = 0.0
 
 	# parametros de metricas
