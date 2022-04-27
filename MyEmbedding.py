@@ -10,8 +10,6 @@ import numpy as np
 class MyEmbedding(tf.keras.layers.Layer):
     def __init__(self, input_dim, output_dim):
         super(MyEmbedding, self).__init__()
-        #self.name = name
-        #self._name = name#layer.name + str("_2")
 
         w_init = tf.initializers.RandomNormal()#GlorotNormal()        
         #w_init = tf.initializers.GlorotNormal()
