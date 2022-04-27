@@ -59,15 +59,8 @@ class MyMultiHeadAttention(tf.keras.layers.Layer):
 		# esto es (q * k) / sqrt(d)
 		attn_score = tf.math.multiply(attn_score, self.scale)    
 
-		#attn_score = mask_fill_inf(attn_score, mask_attn[:,:,:,None])
-		#print('mask_attn; ', mask_attn.shape)
-		#print('3attn_score: ', attn_score.shape)
-						
 		attn_prob = tf.nn.softmax(attn_score, axis=1)
-		#attn_prob = tf.nn.softmax(attn_score)
-		###print('attn_prob: ', attn_prob.shape)
 
-		# attn_vec [24x32x8x64]
 		attn_vec = tf.einsum('ijbn,jbnd->ibnd', attn_prob, head_v)    
 
 		# attn_vec [24x32x512]
@@ -76,11 +69,5 @@ class MyMultiHeadAttention(tf.keras.layers.Layer):
 		# attn_out [24x32x384]
 		attn_out = self.out_dense(attn_vec)    
 
-		# output   = [24x32x384]
-		#####output = self.layernorm(attn_out + h)    
-
-		#####output = self.dropout(output, training = training)    
-				
-		#####return output
 
 		return attn_out
