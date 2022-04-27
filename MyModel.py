@@ -30,12 +30,6 @@ def my_new_positional_encoding(num_adm, batch, d_model):
 	pos_encoding = np.zeros((num_adm, batch, d_model))
   
 	for i in range(num_adm):
-		#pos_encoding[i] = angle_rads[i]
-		#aux = np.reshape(angle_rads[i], (1, len(angle_rads[i])))
-		#print('111aux: ', aux.shape)
-		#aux = np.repeat(np.reshape(angle_rads[i], (1, len(angle_rads[i]))), batch, axis=0)    
-		#print('aux: ', aux.shape)
-		#pos_encoding[i] = aux
 		pos_encoding[i] = np.repeat(np.reshape(angle_rads[i], (1, len(angle_rads[i]))), batch, axis=0)    
   
     
@@ -54,7 +48,7 @@ class MyModel(tf.keras.Model):
 								
 		self.embedding = MyEmbedding(input_dim = n_codes, output_dim = d_emb)
 						
-		# adicionando layers decoder                        
+                     
 		self.dec_layers = [MyDecoderLayer(n_proj, d_model, d_transf, dff)
 						  for i in range(n_layers)]
 
@@ -63,27 +57,24 @@ class MyModel(tf.keras.Model):
 		# adicionar dropout
 		self.dropout = tf.keras.layers.Dropout(0.1, name = 'mm_dropout')
 
-		# adicionar positional encoding
-		#self.positional = MyPositionalEmbedding(d_model)
-
 		self.dropout_1 = tf.keras.layers.Dropout(0.1, name = 'mm_dropout_1')
   
 	def call(self, inp, training = True, target_mask = None):
-		# inp          [28x32x846]
+		# inp   
 		#     num de admisiones
 		#     batch size
 		#     num de codigos
 		#           este tensor utiliza representa a los pacientes
-		# target_mask  [28x32]
+		# target_mask 
 		#     num de admisiones
 		#     batch size
 		#           este tensor representa una mascara donde se guardan si el paciente tiene una admision o no
-		# mask_attn    [28x28x1]
+		# mask_attn   
 		#     num de admisiones
 		#     num de admisiones
-		#           este tensor representa una matriz de admisiones pra considerar solamente admisiones futuras, creo
+		#           este tensor representa una matriz de admisiones pra considerar solamente admisiones futuras
 
-		###print('inp: ', inp.shape)
+		
 		hidden = self.embedding(inp)  # [28 x 32 x d_emb]
 
 		positional = my_new_positional_encoding(hidden.shape[0], hidden.shape[1], hidden.shape[2])
@@ -95,32 +86,28 @@ class MyModel(tf.keras.Model):
 
 
 		for i_layer in range(self.n_layers):
-			hidden = self.dec_layers[i_layer](hidden, hidden, hidden, training)  #[32 x 37 x d_emb]
+			hidden = self.dec_layers[i_layer](hidden, hidden, hidden, training)  
 		
-		#out_decoder = tf.squeeze(ta.stack())  # [28 x 32 x d_emb]
+		
 		out_decoder = hidden
 
-		#print('out_decoder: ', out_decoder.shape)
+		
 		tf.debugging.check_numerics(out_decoder, "SOS out_decoder")
 
 	
 		if target_mask is not None: # target_mask  [28x32]
-			# target_mask = target_mask.unsqueeze(2)
+		
 			# Returns a tensor with a length 1 axis inserted at index axis
-			# convierte la mascara de 28x32 a 28x32x1
 			target_mask = tf.expand_dims(target_mask, axis = 2)   # [28 x 32 x 1]
-			#print('target_mask: ', target_mask.shape)
-
-			# hidden = torch.mul(hidden, target_mask)            
+			
+			       
 			out_decoder = tf.math.multiply(out_decoder, target_mask)  # [28 x 32 x d_emb]
-			#print('out_decoder: ', out_decoder.shape)                              
+			                            
 	
 		out_final_layer = self.final_layer(out_decoder)
-		###print('out_final_layer = : ', out_final_layer.shape)
 		tf.debugging.check_numerics(out_final_layer, "SOS out_final_layer")
 
 		logits   = tf.nn.softmax(out_final_layer)    
-		###print('logits = : ', logits.shape)
 		tf.debugging.check_numerics(logits, "SOS logits")
 
 		return logits
